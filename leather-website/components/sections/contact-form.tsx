@@ -97,14 +97,14 @@ export function ContactForm() {
 
         <Field
           id={field("reason")}
-          label="Reason for enquiry"
+          label="Subject / reason"
           required
           error={errors.reason?.message}
           inputProps={{
             ...register("reason"),
             id: field("reason"),
             autoComplete: "off",
-            placeholder: "Tell us what you'd like to discuss",
+            placeholder: "Product enquiry, custom order request, timeline question...",
           }}
         />
 
@@ -136,7 +136,7 @@ export function ContactForm() {
 
       <div>
         <Label htmlFor={field("message")} className={LABEL_CLASS}>
-          Your enquiry
+          Message
           <span className="ml-1 text-brass">*</span>
         </Label>
         <textarea
@@ -144,7 +144,7 @@ export function ContactForm() {
           id={field("message")}
           rows={4}
           required
-          placeholder="The piece you have in mind, how it will be used, and any timings."
+          placeholder="Describe your enquiry in detail, including product preferences, quantities, deadlines, or questions."
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? `${field("message")}-error` : undefined}
           className="field mt-3 resize-none"

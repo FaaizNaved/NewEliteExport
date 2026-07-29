@@ -17,7 +17,6 @@ export function ownerSubject(reason: string) {
 }
 
 export function ownerHtml(data: OwnerEmailData) {
-  // Premium white & leather-inspired design with inline styles for compatibility
   const {
     name,
     email,
@@ -30,7 +29,8 @@ export function ownerHtml(data: OwnerEmailData) {
     userAgent,
   } = data
 
-  return `<!doctype html>
+  return {
+    html: `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -66,7 +66,7 @@ export function ownerHtml(data: OwnerEmailData) {
                       <p style="margin:0;font-size:13px;color:#6b6763">Country</p>
                       <p style="margin:6px 0 12px;font-size:15px;color:#111">${escape(country)}</p>
 
-                      <p style="margin:0;font-size:13px;color:#6b6763">Reason</p>
+                      <p style="margin:0;font-size:13px;color:#6b6763">Subject / Reason</p>
                       <p style="margin:6px 0 12px;font-size:15px;color:#111">${escape(reason)}</p>
                     </td>
 
@@ -101,5 +101,7 @@ export function ownerHtml(data: OwnerEmailData) {
       </tr>
     </table>
   </body>
-</html>`
+</html>`,
+    text: `New website enquiry\n\nName: ${escape(name)}\nEmail: ${escape(email)}\nPhone: ${escape(phone)}\nCountry: ${escape(country)}\nReason: ${escape(reason)}\nMessage: ${escape(message)}\nSubmitted: ${escape(submittedAt)}\nIP: ${escape(ip ?? "Unavailable")}\nUser Agent: ${escape(userAgent ?? "Unavailable")}`,
+  }
 }

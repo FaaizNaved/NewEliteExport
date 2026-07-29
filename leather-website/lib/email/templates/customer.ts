@@ -9,7 +9,8 @@ export function customerHtml(opts: { name: string; reason: string }) {
   const escName = escape(name || "Customer")
   const escReason = escape(reason || "your enquiry")
 
-  return `<!doctype html>
+  return {
+    html: `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -58,5 +59,7 @@ export function customerHtml(opts: { name: string; reason: string }) {
       </tr>
     </table>
   </body>
-</html>`
+</html>`,
+    text: `Dear ${escName},\n\nThank you for contacting us. We appreciate your interest in our handcrafted leather products. Our team has successfully received your enquiry regarding ${escReason}. Our specialists will carefully review your request and will get back to you within the next 2 business days.\n\nIf your enquiry is urgent, please feel free to reply to this email or contact us directly.\n\nKind Regards,\nNew Elite Exports\nPremium Leather Saddles\nHandcrafted Leather Bags\nLeather Accessories`,
+  }
 }

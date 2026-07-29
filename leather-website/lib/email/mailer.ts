@@ -21,7 +21,7 @@ function validateEnv() {
 
 let transporter: Transporter | null = null
 
-export function getTransporter(): Transporter {
+export async function getTransporter(): Promise<Transporter> {
   if (transporter) return transporter
 
   validateEnv()
@@ -34,10 +34,9 @@ export function getTransporter(): Transporter {
       user: process.env.MAIL_USER,
       pass: process.env.MAIL_PASS,
     },
-    pool: true, // Use pooled connections for production throughput
+    pool: true,
     maxConnections: 3,
     maxMessages: 100,
-    // Graceful timeout handling
     connectionTimeout: 10_000,
     greetingTimeout: 10_000,
     socketTimeout: 10_000,
@@ -46,17 +45,21 @@ export function getTransporter(): Transporter {
     },
   })
 
-  // Verify transporter once on first creation; log but don't throw.
-  transporter
-    .verify()
-    .then(() => console.info("[mailer] SMTP transporter ready."))
-    .catch((err) => console.error("[mailer] Transporter verification failed:", err?.message || err))
+  try {
+    await transporter.verify()
+    console.info("[mailer] SMTP transporter ready.")
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error("[mailer] Transporter verification failed:", message)
+    transporter = null
+    throw err
+  }
 
   return transporter
 }
 
 export async function sendMail(options: nodemailer.SendMailOptions): Promise<void> {
-  const mailer = getTransporter()
+  const mailer = await getTransporter()
   const info = await mailer.sendMail(options)
   console.info("[mailer] Message sent:", info.messageId)
 }

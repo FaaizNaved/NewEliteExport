@@ -12,6 +12,12 @@ function jsonResponse(data: unknown, status = 200) {
   return NextResponse.json(data, { status })
 }
 
+function formatError(err: unknown) {
+  if (err instanceof Error) return err.message
+  if (typeof err === "string") return err
+  return "Unknown error"
+}
+
 function formatFieldErrors(err: any) {
   const errors: Record<string, string> = {}
   if (err?.issues && Array.isArray(err.issues)) {
@@ -68,38 +74,44 @@ export async function POST(req: NextRequest) {
 
     // Send owner email first. This is authoritative — failure here is an error.
     try {
+      const ownerTemplate = ownerHtml({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        country: data.country,
+        reason: data.reason,
+        message: data.message,
+        submittedAt,
+        ip: String(ip),
+        userAgent,
+      })
+
       await sendMail({
-        from: process.env.MAIL_USER,
+        from: `"New Elite Exports" <${process.env.MAIL_USER}>`,
         to: process.env.OWNER_EMAIL,
+        replyTo: data.email,
         subject: ownerSubject(data.reason),
-        html: ownerHtml({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          country: data.country,
-          reason: data.reason,
-          message: data.message,
-          submittedAt,
-          ip: String(ip),
-          userAgent,
-        }),
+        html: ownerTemplate.html,
+        text: ownerTemplate.text,
       })
     } catch (err) {
-      console.error("[contact] Failed to send owner email:", err)
+      console.error("[contact] Failed to send owner email:", formatError(err))
       return jsonResponse({ success: false, message: "Failed to deliver enquiry. Please try again later." }, 500)
     }
 
     // Owner email succeeded — send acknowledgement to customer. Failure here should not fail overall.
     try {
+      const customerTemplate = customerHtml({ name: data.name, reason: data.reason })
       await sendMail({
-        from: process.env.MAIL_USER,
+        from: `"New Elite Exports" <${process.env.MAIL_USER}>`,
         to: data.email,
         subject: customerSubject(),
-        html: customerHtml({ name: data.name, reason: data.reason }),
+        html: customerTemplate.html,
+        text: customerTemplate.text,
       })
     } catch (err) {
       // Log but do not surface internal error to the client.
-      console.error("[contact] Failed to send acknowledgement email to customer:", err)
+      console.error("[contact] Failed to send acknowledgement email to customer:", formatError(err))
     }
 
     return jsonResponse({ success: true, message: "Your enquiry has been submitted successfully." }, 200)
