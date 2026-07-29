@@ -1,0 +1,326 @@
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+
+/* ------------------------------------------------------------------ */
+/*  Maison Ferrand — design tokens                                     */
+/*  Earthy luxury palette. No dark-mode variant: the brand owns one     */
+/*  fixed, warm colour world across every surface.                     */
+/* ------------------------------------------------------------------ */
+
+/* Literal brand tokens. Plain `@theme` (not `inline`) so the custom properties
+   are also emitted on :root and can be read by the component classes below. */
+@theme {
+  /* Brand ramp */
+  --color-ink: #12100e;
+  --color-bark: #1c1714;
+  --color-leather: #3b2318;
+  --color-chestnut: #5a3620;
+  --color-tan: #a9713c;
+  --color-camel: #c29a6c;
+  --color-brass: #b08d57;
+  --color-brass-deep: #8a6a34;
+  --color-cream: #f3ede4;
+  --color-parchment: #faf6f0;
+  --color-mist: #a79c90;
+  --color-stone: #6b5f55;
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+
+  /* Fluid editorial type scale */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.28em;
+  --text-display-sm: clamp(2rem, 1.2rem + 3.2vw, 3.5rem);
+  --text-display-sm--line-height: 1.08;
+  --text-display: clamp(2.25rem, 1.1rem + 3.4vw, 4.75rem);
+  --text-display--line-height: 1.03;
+  --text-display-lg: clamp(3.25rem, 0.9rem + 9vw, 9.5rem);
+  --text-display-lg--line-height: 0.95;
+
+  /* Section rhythm */
+  --spacing-section: clamp(6rem, 3rem + 9vw, 14rem);
+  --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 5rem);
+
+  /* Luxury easing — long, weighted, never springy */
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* shadcn's token contract, re-skinned to the leather palette. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: #faf6f0;
+  --foreground: #221a15;
+  --card: #f3ede4;
+  --card-foreground: #221a15;
+  --popover: #faf6f0;
+  --popover-foreground: #221a15;
+  --primary: #3b2318;
+  --primary-foreground: #faf6f0;
+  --secondary: #efe7db;
+  --secondary-foreground: #3b2318;
+  --muted: #efe7db;
+  --muted-foreground: #6b5f55;
+  --accent: #efe7db;
+  --accent-foreground: #3b2318;
+  --destructive: #9b2c1f;
+  --border: #ddd1c2;
+  --input: #ddd1c2;
+  --ring: #a9713c;
+  --radius: 0.125rem;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  blockquote {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+    font-weight: 300;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-tan);
+    color: var(--color-parchment);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-tan);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    ::after,
+    ::before {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Editorial measure — wide, with generous fluid gutters */
+  .shell {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 108rem;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .section {
+    padding-block: var(--spacing-section);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-size: var(--text-eyebrow);
+    line-height: 1;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 2.5rem;
+    height: 1px;
+    background-color: currentColor;
+    opacity: 0.45;
+  }
+
+  /* Understated link underline that draws in from the left */
+  .link-quiet {
+    position: relative;
+    display: inline-block;
+  }
+
+  .link-quiet::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.25rem;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-luxe);
+  }
+
+  .link-quiet:hover::after,
+  .link-quiet:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Scroll cue: a lit segment falling repeatedly down a hairline */
+  .scroll-cue {
+    position: relative;
+    width: 1px;
+    height: 4.5rem;
+    overflow: hidden;
+    background-color: color-mix(in srgb, var(--color-cream) 18%, transparent);
+  }
+
+  .scroll-cue::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    height: 45%;
+    background-color: var(--color-brass);
+    animation: scroll-cue 2.6s var(--ease-luxe) infinite;
+  }
+
+  @keyframes scroll-cue {
+    0% {
+      transform: translateY(-110%);
+    }
+    60%,
+    100% {
+      transform: translateY(230%);
+    }
+  }
+
+  /* Underline-only form fields — no boxes, no chrome */
+  .field {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-cream) 22%, transparent);
+    border-radius: 0;
+    background-color: transparent;
+    padding-block: 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--color-cream);
+    transition: border-color 0.5s var(--ease-luxe);
+  }
+
+  select.field {
+    appearance: none;
+    padding-right: 1.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a79c90' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.125rem center;
+    background-size: 0.8125rem;
+  }
+
+  .field::placeholder {
+    color: color-mix(in srgb, var(--color-mist) 70%, transparent);
+  }
+
+  .field:hover {
+    border-bottom-color: color-mix(in srgb, var(--color-cream) 40%, transparent);
+  }
+
+  .field:focus {
+    outline: none;
+    border-bottom-color: var(--color-brass);
+  }
+
+  .field:focus-visible {
+    outline: none;
+  }
+}
+
+@layer utilities {
+  /* Cinematic scrim for text sitting over photography */
+  .scrim {
+    background-image: linear-gradient(
+        to right,
+        rgb(18 16 14 / 0.85) 0%,
+        rgb(18 16 14 / 0.6) 38%,
+        rgb(18 16 14 / 0.38) 72%,
+        rgb(18 16 14 / 0.45) 100%
+      ),
+      linear-gradient(
+        to top,
+        rgb(18 16 14 / 0.8) 0%,
+        rgb(18 16 14 / 0.25) 45%,
+        rgb(18 16 14 / 0.15) 72%,
+        rgb(18 16 14 / 0.6) 100%
+      ),
+      radial-gradient(120% 85% at 45% 45%, transparent 30%, rgb(18 16 14 / 0.6) 100%);
+  }
+
+  .scrim-soft {
+    background-image: linear-gradient(
+      to top,
+      rgb(18 16 14 / 0.75) 0%,
+      rgb(18 16 14 / 0.15) 55%,
+      rgb(18 16 14 / 0.05) 100%
+    );
+  }
+
+  /* Fine hairline used to divide editorial blocks */
+  .hairline {
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, currentColor 28%, transparent) 12%,
+      color-mix(in srgb, currentColor 28%, transparent) 88%,
+      transparent
+    );
+  }
+}
